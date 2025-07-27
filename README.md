@@ -143,9 +143,9 @@ The OTP email template is designed with clean, professional HTML that clearly sh
 ## 📧 Contact
 
 * **Name**: Nitesh Kumar Sharma
-* **Email**: [your.email@example.com](mailto:niteshkumarsharma831@gmail.com)
-* **LinkedIn**: [LinkedIn](https://www.linkedin.com/in/nitesh-kumar-sharma-2894a1185/)
-* **GitHub**: [GitHub](https://github.com/Niteshsharma831)
+* **Email**: [Niteshkumarsharma831@gmail.com](mailto:niteshkumarsharma831@gmail.com)
+* **LinkedIn**: [Check LinkedIn Profile](https://www.linkedin.com/in/nitesh-kumar-sharma-2894a1185/)
+* **GitHub**: [Visit GitHub](https://github.com/Niteshsharma831)
 
 > 💡 *This project was part of a job/internship task.*
 > ✅ If you like it, feel free to give ⭐ and fork the repo.
