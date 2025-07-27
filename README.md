@@ -143,7 +143,7 @@ The OTP email template is designed with clean, professional HTML that clearly sh
 ## 📧 Contact
 
 * **Name**: Nitesh Kumar Sharma
-* **Email**: [your.email@example.com](mailto:your.email@example.com)
+* **Email**: [your.email@example.com](mailto:niteshkumarsharma831@gmail.com)
 * **LinkedIn**: [LinkedIn](https://www.linkedin.com/in/nitesh-kumar-sharma-2894a1185/)
 * **GitHub**: [GitHub](https://github.com/Niteshsharma831)
 
