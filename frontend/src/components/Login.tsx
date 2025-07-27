@@ -62,7 +62,7 @@ const Login: React.FC = () => {
 
       {/* Form Section with Border */}
       <div className="flex flex-col justify-center items-center flex-1 bg-white p-8">
-        <div className="w-full max-w-m border border-gray-300 rounded-lg p-6 shadow-sm bg-white">
+        <div className="w-full max-w-md border border-gray-300 rounded-lg p-6 shadow-sm bg-white">
           <div className="flex items-center mb-4">
             <svg
               className="h-8 w-8 text-blue-600"
