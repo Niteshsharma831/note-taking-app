@@ -9,8 +9,8 @@ dotenv.config();
 const app = express();
 app.use(cors()); 
 app.use(cors({
-  origin: "http://localhost:5173", // or your frontend port
-  credentials: true, // only needed if using cookies (optional)
+  origin: "http://localhost:5173", 
+  credentials: true,
 }));
 app.use(express.json());
 
