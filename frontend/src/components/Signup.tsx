@@ -1,38 +1,40 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import API from '../services/api';
-import { toast, Toaster } from 'react-hot-toast';
-import { Eye, EyeOff } from 'lucide-react';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import API from "../services/api";
+import { toast, Toaster } from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
 
 const Signup: React.FC = () => {
-  const [name, setName] = useState('');
-  const [dob, setDob] = useState('');
-  const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
+  const [name, setName] = useState("");
+  const [dob, setDob] = useState("");
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
-  const navigate = useNavigate(); // ✅ Used for redirection
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const clearForm = () => {
-    setName('');
-    setDob('');
-    setEmail('');
-    setOtp('');
+    setName("");
+    setDob("");
+    setEmail("");
+    setOtp("");
     setShowOtpInput(false);
     setShowOtp(false);
+    setLoading(false);
   };
 
   const validateForm = () => {
     if (!name.trim()) {
-      toast.error('Name is required');
+      toast.error("Name is required");
       return false;
     }
     if (!dob) {
-      toast.error('Date of Birth is required');
+      toast.error("Date of Birth is required");
       return false;
     }
-    if (!email.trim() || !email.includes('@')) {
-      toast.error('Valid email is required');
+    if (!email.trim() || !email.includes("@")) {
+      toast.error("Valid email is required");
       return false;
     }
     return true;
@@ -42,28 +44,34 @@ const Signup: React.FC = () => {
     if (!validateForm()) return;
 
     try {
-      const res = await API.post('/send-otp', { email });
-      toast.success(res.data.message || 'OTP sent to your email');
+      setLoading(true);
+      const res = await API.post("/send-otp", { email });
+      toast.success(res.data.message || "OTP sent to your email");
       setShowOtpInput(true);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to send OTP');
+      toast.error(err.response?.data?.message || "Failed to send OTP");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleVerifyOtp = async () => {
     if (!otp.trim()) {
-      toast.error('OTP is required');
+      toast.error("OTP is required");
       return;
     }
 
     try {
-      const res = await API.post('/verify-otp', { name, dob, email, otp });
-      toast.success(res.data.message || 'Signup successful');
-      localStorage.setItem('authToken', res.data.token);
+      setLoading(true);
+      const res = await API.post("/verify-otp", { name, dob, email, otp });
+      toast.success(res.data.message || "Signup successful");
+      localStorage.setItem("authToken", res.data.token);
       clearForm();
-      navigate('/'); // ✅ Redirect to home page
+      navigate("/");
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Invalid or expired OTP');
+      toast.error(err.response?.data?.message || "Invalid or expired OTP");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -73,11 +81,39 @@ const Signup: React.FC = () => {
 
       {/* Left - Signup Form */}
       <div className="flex flex-col justify-center items-center flex-1 bg-white p-8">
-        <div className="text-2xl font-bold text-blue-600 mb-4">🔵 HD</div>
-        <h2 className="text-3xl font-bold mb-2">Sign up</h2>
-        <p className="text-gray-500 mb-6 text-center">Sign up to enjoy the features of HD</p>
+        <div className="w-full max-w-md border border-gray-300 rounded-lg p-6">
+          <div className="flex items-center mb-4">
+            <svg
+              className="h-8 w-8 text-blue-600"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="12" y1="2" x2="12" y2="6" />
+                <line x1="12" y1="18" x2="12" y2="22" />
+                <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" />
+                <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" />
+                <line x1="2" y1="12" x2="6" y2="12" />
+                <line x1="18" y1="12" x2="22" y2="12" />
+                <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" />
+                <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" />
+                <circle cx="12" cy="12" r="4" />
+              </g>
+            </svg>
 
-        <div className="w-full max-w-xs">
+            <span className="text-3xl font-bold text-gray-800 mx-3">HD</span>
+          </div>
+          <h2 className="text-3xl font-bold mb-2 text-center">Sign up</h2>
+          <p className="text-gray-500 mb-6 text-center">
+            Sign up to enjoy the features of HD
+          </p>
+
           {/* Name */}
           <input
             type="text"
@@ -108,7 +144,7 @@ const Signup: React.FC = () => {
           {showOtpInput && (
             <div className="relative mb-4">
               <input
-                type={showOtp ? 'text' : 'password'}
+                type={showOtp ? "text" : "password"}
                 placeholder="OTP"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
@@ -119,7 +155,11 @@ const Signup: React.FC = () => {
                 onClick={() => setShowOtp(!showOtp)}
                 className="absolute right-2 top-2 text-gray-500"
               >
-                {showOtp ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                {showOtp ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
               </button>
             </div>
           )}
@@ -128,22 +168,70 @@ const Signup: React.FC = () => {
           {!showOtpInput ? (
             <button
               onClick={handleSendOtp}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded w-full"
+              disabled={loading}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded w-full flex justify-center items-center"
             >
-              Get OTP
+              {loading ? (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  />
+                </svg>
+              ) : (
+                "Get OTP"
+              )}
             </button>
           ) : (
             <button
               onClick={handleVerifyOtp}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded w-full"
+              disabled={loading}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded w-full flex justify-center items-center"
             >
-              Sign up
+              {loading ? (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  />
+                </svg>
+              ) : (
+                "Sign up"
+              )}
             </button>
           )}
 
           {/* Redirect to login */}
           <p className="text-sm text-gray-500 mt-4 text-center">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link to="/login" className="text-blue-600 hover:underline">
               Sign in
             </Link>
