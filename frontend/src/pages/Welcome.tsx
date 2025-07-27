@@ -1,23 +1,12 @@
-import React, { useState } from 'react';
-import Login from '../components/Login';
-import Signup from '../components/Signup';
-import Home from './Home';
+// import React from 'react';
 
-const Welcome: React.FC = () => {
-  const [token, setToken] = useState('');
+// interface WelcomeProps {
+//   onLogin: React.Dispatch<React.SetStateAction<string>>;
+// }
 
-  return (
-    <div>
-      {!token ? (
-        <>
-          <Signup />
-          <Login onLogin={setToken} />
-        </>
-      ) : (
-        <Home />
-      )}
-    </div>
-  );
-};
+// const Welcome: React.FC<WelcomeProps> = ({ onLogin }) => {
+//   // use onLogin here
+//   return <div>Welcome page</div>;
+// };
 
-export default Welcome;
+// export default Welcome;
