@@ -10,9 +10,8 @@ const Login: React.FC = () => {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
   const [keepLoggedIn, setKeepLoggedIn] = useState(false);
-  const [sendingOtp, setSendingOtp] = useState(false);
-  const [verifyingOtp, setVerifyingOtp] = useState(false);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleSendOtp = async () => {
     if (!email.trim() || !email.includes("@")) {
@@ -20,7 +19,7 @@ const Login: React.FC = () => {
       return;
     }
 
-    setSendingOtp(true);
+    setLoading(true); // start loading
     try {
       const res = await API.post("/send-otp", { email });
       toast.success(res.data.message || "OTP sent to your email");
@@ -28,7 +27,7 @@ const Login: React.FC = () => {
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to send OTP.");
     } finally {
-      setSendingOtp(false);
+      setLoading(false); // stop loading
     }
   };
 
@@ -38,11 +37,10 @@ const Login: React.FC = () => {
       return;
     }
 
-    setVerifyingOtp(true);
+    setLoading(true);
     try {
       const res = await API.post("/login", { email, otp });
       const token = res.data.token;
-
       if (!token) {
         toast.error("No token received from server.");
         return;
@@ -54,7 +52,7 @@ const Login: React.FC = () => {
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Login failed.");
     } finally {
-      setVerifyingOtp(false);
+      setLoading(false);
     }
   };
 
@@ -62,9 +60,9 @@ const Login: React.FC = () => {
     <div className="flex flex-col md:flex-row h-screen">
       <Toaster position="top-center" />
 
-      {/* Left - Form Section */}
+      {/* Form Section with Border */}
       <div className="flex flex-col justify-center items-center flex-1 bg-white p-8">
-        <div className="w-full max-w-md border border-gray-300 rounded-lg p-6 shadow-sm bg-white">
+        <div className="w-full max-w-m border border-gray-300 rounded-lg p-6 shadow-sm bg-white">
           <div className="flex items-center mb-4">
             <svg
               className="h-8 w-8 text-blue-600"
@@ -89,20 +87,24 @@ const Login: React.FC = () => {
                 <circle cx="12" cy="12" r="4" />
               </g>
             </svg>
+
             <span className="text-3xl font-bold text-gray-800 mx-3">HD</span>
           </div>
-
           <h2 className="text-3xl font-bold mb-2">Sign In</h2>
           <p className="text-gray-500 mb-6 text-center">
             Please login to continue to your account.
           </p>
 
           <div className="w-full mt-10">
-            {/* Email */}
-            <label className="block text-gray-700 text-sm font-bold mb-2">
+            {/* Email Input */}
+            <label
+              htmlFor="email"
+              className="block text-gray-700 text-sm font-bold mb-2"
+            >
               Email
             </label>
             <input
+              id="email"
               type="email"
               placeholder="your@email.com"
               value={email}
@@ -110,13 +112,13 @@ const Login: React.FC = () => {
               className="border border-gray-300 rounded px-4 py-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
-            {/* Send OTP Button */}
+            {/* OTP Send Button */}
             <button
               onClick={handleSendOtp}
-              disabled={sendingOtp}
+              disabled={loading}
               className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded w-full mb-4 flex justify-center items-center"
             >
-              {sendingOtp ? (
+              {loading ? (
                 <svg
                   className="animate-spin h-5 w-5 text-white"
                   xmlns="http://www.w3.org/2000/svg"
@@ -130,24 +132,32 @@ const Login: React.FC = () => {
                     r="10"
                     stroke="currentColor"
                     strokeWidth="4"
-                  />
+                  ></circle>
                   <path
                     className="opacity-75"
                     fill="currentColor"
                     d="M4 12a8 8 0 018-8v8z"
-                  />
+                  ></path>
                 </svg>
-              ) : showOtpInput ? "Resend OTP" : "Send OTP"}
+              ) : showOtpInput ? (
+                "Resend OTP"
+              ) : (
+                "Send OTP"
+              )}
             </button>
 
             {/* OTP Input */}
             {showOtpInput && (
               <>
-                <label className="block text-gray-700 text-sm font-bold mb-2">
+                <label
+                  htmlFor="otp"
+                  className="block text-gray-700 text-sm font-bold mb-2"
+                >
                   OTP
                 </label>
                 <div className="relative mb-4">
                   <input
+                    id="otp"
                     type={showOtp ? "text" : "password"}
                     placeholder="Enter OTP"
                     value={otp}
@@ -169,7 +179,7 @@ const Login: React.FC = () => {
               </>
             )}
 
-            {/* Keep me logged in */}
+            {/* Keep Me Logged In */}
             <div className="flex items-center mb-6">
               <input
                 id="keepLoggedIn"
@@ -178,19 +188,22 @@ const Login: React.FC = () => {
                 onChange={(e) => setKeepLoggedIn(e.target.checked)}
                 className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
               />
-              <label htmlFor="keepLoggedIn" className="ml-2 text-sm text-gray-900">
+              <label
+                htmlFor="keepLoggedIn"
+                className="ml-2 block text-sm text-gray-900"
+              >
                 Keep me logged in
               </label>
             </div>
 
-            {/* Verify OTP */}
+            {/* Sign In Button */}
             {showOtpInput && (
               <button
                 onClick={handleVerifyOtp}
-                disabled={verifyingOtp}
+                disabled={loading}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded w-full flex justify-center items-center"
               >
-                {verifyingOtp ? (
+                {loading ? (
                   <svg
                     className="animate-spin h-5 w-5 text-white"
                     xmlns="http://www.w3.org/2000/svg"
@@ -204,12 +217,12 @@ const Login: React.FC = () => {
                       r="10"
                       stroke="currentColor"
                       strokeWidth="4"
-                    />
+                    ></circle>
                     <path
                       className="opacity-75"
                       fill="currentColor"
                       d="M4 12a8 8 0 018-8v8z"
-                    />
+                    ></path>
                   </svg>
                 ) : (
                   "Sign In"
@@ -217,9 +230,9 @@ const Login: React.FC = () => {
               </button>
             )}
 
-            {/* Redirect to Signup */}
+            {/* Signup Link */}
             <p className="text-sm text-gray-500 mt-4 text-center">
-              Don’t have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link to="/signup" className="text-blue-600 hover:underline">
                 Create one
               </Link>
@@ -228,7 +241,7 @@ const Login: React.FC = () => {
         </div>
       </div>
 
-      {/* Right - Image */}
+      {/* Image Section */}
       <div className="hidden md:block flex-1">
         <img
           src="https://4kwallpapers.com/images/wallpapers/windows-11-dark-mode-blue-stock-official-3840x2400-5630.jpg"
