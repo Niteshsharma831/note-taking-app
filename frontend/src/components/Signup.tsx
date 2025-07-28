@@ -76,13 +76,42 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen">
+    <div className="flex flex-col md:flex-row h-screen overflow-y-auto md:overflow-hidden bg-white relative">
       <Toaster position="top-center" />
 
+      {/* Desktop Top-Left Logo */}
+      <div className="hidden md:flex absolute top-6 left-6 items-center z-10">
+        <svg
+          className="h-8 w-8 text-blue-600"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="12" y1="2" x2="12" y2="6" />
+            <line x1="12" y1="18" x2="12" y2="22" />
+            <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" />
+            <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" />
+            <line x1="2" y1="12" x2="6" y2="12" />
+            <line x1="18" y1="12" x2="22" y2="12" />
+            <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" />
+            <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" />
+            <circle cx="12" cy="12" r="4" />
+          </g>
+        </svg>
+        <span className="text-2xl font-bold text-gray-800 ml-2">HD</span>
+      </div>
+
       {/* Left - Signup Form */}
-      <div className="flex flex-col justify-center items-center flex-1 bg-white p-8">
-        <div className="w-full max-w-md border border-gray-300 rounded-lg p-6">
-          <div className="flex items-center mb-4">
+      <div className="flex flex-col justify-center items-center flex-1 p-0 md:p-8">
+        <div className="w-full p-4 md:max-w-md md:border md:border-gray-200 md:rounded-xl md:shadow-lg md:p-6 bg-white">
+          {/* Mobile Logo */}
+          <div className="flex items-center mb-4 md:hidden">
             <svg
               className="h-8 w-8 text-blue-600"
               viewBox="0 0 24 24"
@@ -106,24 +135,22 @@ const Signup: React.FC = () => {
                 <circle cx="12" cy="12" r="4" />
               </g>
             </svg>
-
             <span className="text-3xl font-bold text-gray-800 mx-3">HD</span>
           </div>
+
           <h2 className="text-3xl font-bold mb-2 text-center">Sign up</h2>
           <p className="text-gray-500 mb-6 text-center">
             Sign up to enjoy the features of HD
           </p>
 
-          {/* Name */}
           <input
             type="text"
             placeholder="Your Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="border border-gray-300 rounded px-4 py-2 mb-4 w-full"
+            className="border border-gray-300 rounded px-4 py-2 mb-4 w-full mt-10"
           />
 
-          {/* DOB */}
           <input
             type="date"
             value={dob}
@@ -131,7 +158,6 @@ const Signup: React.FC = () => {
             className="border border-gray-300 rounded px-4 py-2 mb-4 w-full"
           />
 
-          {/* Email */}
           <input
             type="email"
             placeholder="Email"
@@ -140,7 +166,6 @@ const Signup: React.FC = () => {
             className="border border-blue-500 rounded px-4 py-2 mb-4 w-full"
           />
 
-          {/* OTP Input */}
           {showOtpInput && (
             <div className="relative mb-4">
               <input
@@ -164,7 +189,6 @@ const Signup: React.FC = () => {
             </div>
           )}
 
-          {/* Submit Button */}
           {!showOtpInput ? (
             <button
               onClick={handleSendOtp}
@@ -229,7 +253,6 @@ const Signup: React.FC = () => {
             </button>
           )}
 
-          {/* Redirect to login */}
           <p className="text-sm text-gray-500 mt-4 text-center">
             Already have an account?{" "}
             <Link to="/login" className="text-blue-600 hover:underline">

@@ -57,13 +57,43 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-screen">
+    <div className="flex flex-col md:flex-row h-screen w-screen relative">
       <Toaster position="top-center" />
+
+      {/* Desktop top-left logo */}
+      <div className="hidden md:flex absolute top-6 left-6 items-center">
+        <svg
+          className="h-8 w-8 text-blue-600"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <line x1="12" y1="2" x2="12" y2="6" />
+            <line x1="12" y1="18" x2="12" y2="22" />
+            <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" />
+            <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" />
+            <line x1="2" y1="12" x2="6" y2="12" />
+            <line x1="18" y1="12" x2="22" y2="12" />
+            <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" />
+            <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" />
+            <circle cx="12" cy="12" r="4" />
+          </g>
+        </svg>
+        <span className="text-2xl font-bold text-gray-800 ml-2">HD</span>
+      </div>
 
       {/* Form Section */}
       <div className="flex flex-col justify-center items-center w-full md:w-1/2 h-full p-8 bg-white">
-        <div className="w-full max-w-md border border-gray-300 rounded-lg p-6 shadow-sm bg-white">
-          <div className="flex items-center mb-4">
+        <div className="w-full p-4 md:max-w-md md:border md:border-gray-200 md:rounded-xl md:shadow-lg md:p-6 bg-white">
+
+          {/* Mobile-centered logo */}
+          <div className="flex items-center justify-center mb-4 md:hidden">
             <svg
               className="h-8 w-8 text-blue-600"
               viewBox="0 0 24 24"
@@ -87,10 +117,10 @@ const Login: React.FC = () => {
                 <circle cx="12" cy="12" r="4" />
               </g>
             </svg>
-            <span className="text-3xl font-bold text-gray-800 mx-3">HD</span>
+            <span className="text-3xl font-bold text-gray-800 ml-3">HD</span>
           </div>
 
-          <h2 className="text-3xl font-bold mb-2">Sign In</h2>
+          <h2 className="text-3xl font-bold mb-2 text-center">Sign In</h2>
           <p className="text-gray-500 mb-6 text-center">
             Please login to continue to your account.
           </p>
