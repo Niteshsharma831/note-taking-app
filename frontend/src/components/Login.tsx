@@ -90,7 +90,7 @@ const Login: React.FC = () => {
 
       {/* Form Section */}
       <div className="flex flex-col justify-start md:justify-center items-center w-full md:w-1/2 h-full p-6 pt-10 bg-white">
-        <div className="w-full p-4 md:max-w-md md:border md:border-gray-200 md:rounded-xl md:shadow-lg md:p-6 bg-white">
+        <div className="w-full md:max-w-md md:border md:border-gray-200 md:rounded-xl md:shadow-lg md:p-6 bg-white">
 
           {/* Mobile-centered logo */}
           <div className="flex items-center justify-center mb-4 md:hidden">
