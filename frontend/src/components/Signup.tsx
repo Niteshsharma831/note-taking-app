@@ -108,7 +108,7 @@ const Signup: React.FC = () => {
       </div>
 
       {/* Left - Signup Form */}
-<div className="flex-1 flex justify-center p-4 md:p-8 items-start">
+      <div className="flex-1 flex justify-center p-4 md:p-8 items-start md:items-center">
         <div className="w-full max-w-md md:border md:border-gray-200 md:rounded-xl md:shadow-lg md:p-6 bg-white">
           {/* Mobile Centered Logo */}
           <div className="flex md:hidden justify-center items-center mb-6">
