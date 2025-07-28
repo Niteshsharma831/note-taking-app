@@ -19,7 +19,7 @@ const Login: React.FC = () => {
       return;
     }
 
-    setLoading(true); // start loading
+    setLoading(true);
     try {
       const res = await API.post("/send-otp", { email });
       toast.success(res.data.message || "OTP sent to your email");
@@ -27,7 +27,7 @@ const Login: React.FC = () => {
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to send OTP.");
     } finally {
-      setLoading(false); // stop loading
+      setLoading(false);
     }
   };
 
@@ -57,11 +57,11 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen">
+    <div className="flex flex-col md:flex-row h-screen w-screen">
       <Toaster position="top-center" />
 
-      {/* Form Section with Border */}
-      <div className="flex flex-col justify-center items-center flex-1 bg-white p-8">
+      {/* Form Section */}
+      <div className="flex flex-col justify-center items-center w-full md:w-1/2 h-full p-8 bg-white">
         <div className="w-full max-w-md border border-gray-300 rounded-lg p-6 shadow-sm bg-white">
           <div className="flex items-center mb-4">
             <svg
@@ -87,16 +87,15 @@ const Login: React.FC = () => {
                 <circle cx="12" cy="12" r="4" />
               </g>
             </svg>
-
             <span className="text-3xl font-bold text-gray-800 mx-3">HD</span>
           </div>
+
           <h2 className="text-3xl font-bold mb-2">Sign In</h2>
           <p className="text-gray-500 mb-6 text-center">
             Please login to continue to your account.
           </p>
 
           <div className="w-full mt-10">
-            {/* Email Input */}
             <label
               htmlFor="email"
               className="block text-gray-700 text-sm font-bold mb-2"
@@ -112,7 +111,6 @@ const Login: React.FC = () => {
               className="border border-gray-300 rounded px-4 py-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
 
-            {/* OTP Send Button */}
             <button
               onClick={handleSendOtp}
               disabled={loading}
@@ -146,7 +144,6 @@ const Login: React.FC = () => {
               )}
             </button>
 
-            {/* OTP Input */}
             {showOtpInput && (
               <>
                 <label
@@ -179,7 +176,6 @@ const Login: React.FC = () => {
               </>
             )}
 
-            {/* Keep Me Logged In */}
             <div className="flex items-center mb-6">
               <input
                 id="keepLoggedIn"
@@ -196,7 +192,6 @@ const Login: React.FC = () => {
               </label>
             </div>
 
-            {/* Sign In Button */}
             {showOtpInput && (
               <button
                 onClick={handleVerifyOtp}
@@ -230,7 +225,6 @@ const Login: React.FC = () => {
               </button>
             )}
 
-            {/* Signup Link */}
             <p className="text-sm text-gray-500 mt-4 text-center">
               Don&apos;t have an account?{" "}
               <Link to="/signup" className="text-blue-600 hover:underline">
@@ -241,8 +235,8 @@ const Login: React.FC = () => {
         </div>
       </div>
 
-      {/* Image Section */}
-      <div className="hidden md:block flex-1">
+      {/* Image Section (Desktop only) */}
+      <div className="hidden md:block w-1/2 h-full">
         <img
           src="https://4kwallpapers.com/images/wallpapers/windows-11-dark-mode-blue-stock-official-3840x2400-5630.jpg"
           alt="Login Visual"
