@@ -3,10 +3,12 @@ import Signup from './components/Signup';
 import Login from './components/Login';
 import NotesPage from './components/NotesPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTop from './components/ScrollToTop';
 
 const App = () => {
   return (
     <Router>
+       <ScrollToTop /> {/* <- add this just inside BrowserRouter */}
       <Routes>
         <Route
           path="/"
