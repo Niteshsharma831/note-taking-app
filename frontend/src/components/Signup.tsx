@@ -76,10 +76,10 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen overflow-y-auto md:overflow-hidden bg-white relative">
+    <div className="flex flex-col md:flex-row h-screen bg-white">
       <Toaster position="top-center" />
 
-      {/* Desktop Logo Top-Left */}
+      {/* Desktop Top-Left Logo */}
       <div className="hidden md:flex absolute top-6 left-6 items-center z-10">
         <svg
           className="h-8 w-8 text-blue-600"
@@ -109,11 +109,11 @@ const Signup: React.FC = () => {
 
       {/* Left - Signup Form */}
       <div className="flex-1 flex items-center justify-center p-4 md:p-8">
-        <div className="w-full p-4 md:max-w-md md:border md:border-gray-200 md:rounded-xl md:shadow-lg md:p-6 bg-white">
-          {/* Mobile Logo Centered */}
-          <div className="flex flex-col items-center mb-4 md:hidden">
+        <div className="w-full max-w-md md:border md:border-gray-200 md:rounded-xl md:shadow-lg md:p-6 bg-white">
+          {/* Mobile Centered Logo */}
+          <div className="flex md:hidden justify-center items-center mb-6">
             <svg
-              className="h-10 w-10 text-blue-600"
+              className="h-8 w-8 text-blue-600"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -135,7 +135,7 @@ const Signup: React.FC = () => {
                 <circle cx="12" cy="12" r="4" />
               </g>
             </svg>
-            <span className="text-3xl font-bold text-gray-800 mt-2">HD</span>
+            <span className="text-3xl font-bold text-gray-800 ml-2">HD</span>
           </div>
 
           <h2 className="text-3xl font-bold mb-2 text-center">Sign up</h2>
@@ -148,7 +148,7 @@ const Signup: React.FC = () => {
             placeholder="Your Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="border border-gray-300 rounded px-4 py-2 mb-4 w-full mt-10"
+            className="border border-gray-300 rounded px-4 py-2 mb-4 w-full mt-4"
           />
 
           <input
