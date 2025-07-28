@@ -57,7 +57,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-screen overflow-y-auto md:overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen w-screen relative">
       <Toaster position="top-center" />
 
       {/* Desktop top-left logo */}
@@ -89,11 +89,11 @@ const Login: React.FC = () => {
       </div>
 
       {/* Form Section */}
-      <div className="flex flex-col justify-center items-center w-full md:w-1/2 min-h-screen p-8 bg-white">
+      <div className="flex flex-col justify-center items-center w-full md:w-1/2 h-full p-8 bg-white">
         <div className="w-full p-4 md:max-w-md md:border md:border-gray-200 md:rounded-xl md:shadow-lg md:p-6 bg-white">
 
           {/* Mobile-centered logo */}
-          <div className="flex flex-col items-center justify-center mb-4 md:hidden">
+          <div className="flex items-center justify-center mb-4 md:hidden">
             <svg
               className="h-8 w-8 text-blue-600"
               viewBox="0 0 24 24"
@@ -117,7 +117,7 @@ const Login: React.FC = () => {
                 <circle cx="12" cy="12" r="4" />
               </g>
             </svg>
-            <span className="text-3xl font-bold text-gray-800 mt-1">HD</span>
+            <span className="text-3xl font-bold text-gray-800 ml-3">HD</span>
           </div>
 
           <h2 className="text-3xl font-bold mb-2 text-center">Sign In</h2>
