@@ -167,6 +167,12 @@ const Signup: React.FC = () => {
           />
 
           {showOtpInput && (
+            <div className="text-right text-sm text-blue-600 hover:underline cursor-pointer mb-2" onClick={handleSendOtp}>
+              Resend OTP
+            </div>
+          )}
+
+          {showOtpInput && (
             <div className="relative mb-4">
               <input
                 type={showOtp ? "text" : "password"}
