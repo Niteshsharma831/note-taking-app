@@ -175,6 +175,9 @@ const Signup: React.FC = () => {
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 className="border border-gray-300 rounded px-4 py-2 w-full"
+                autoComplete="one-time-code"
+                autoFocus
+                inputMode="numeric"
               />
               <button
                 type="button"
