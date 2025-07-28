@@ -156,6 +156,7 @@ const Signup: React.FC = () => {
             value={dob}
             onChange={(e) => setDob(e.target.value)}
             className="border border-gray-300 rounded px-4 py-2 mb-4 w-full"
+            placeholder="Date of Birth"
           />
 
           <input
