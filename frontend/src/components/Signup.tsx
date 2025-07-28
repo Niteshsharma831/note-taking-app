@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import API from "../services/api";
 import { toast, Toaster } from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
 
 const Signup: React.FC = () => {
+  const [name, setName] = useState("");
+  const [dob, setDob] = useState("");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [showOtpInput, setShowOtpInput] = useState(false);
@@ -12,55 +14,73 @@ const Signup: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSendOtp = async () => {
-    if (!email.trim() || !email.includes("@")) {
-      toast.error("Please enter a valid email address.");
-      return;
-    }
+  const clearForm = () => {
+    setName("");
+    setDob("");
+    setEmail("");
+    setOtp("");
+    setShowOtpInput(false);
+    setShowOtp(false);
+    setLoading(false);
+  };
 
-    setLoading(true);
+  const validateForm = () => {
+    if (!name.trim()) {
+      toast.error("Name is required");
+      return false;
+    }
+    if (!dob) {
+      toast.error("Date of Birth is required");
+      return false;
+    }
+    if (!email.trim() || !email.includes("@")) {
+      toast.error("Valid email is required");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSendOtp = async () => {
+    if (!validateForm()) return;
+
     try {
+      setLoading(true);
       const res = await API.post("/send-otp", { email });
       toast.success(res.data.message || "OTP sent to your email");
       setShowOtpInput(true);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to send OTP.");
+      toast.error(err.response?.data?.message || "Failed to send OTP");
     } finally {
       setLoading(false);
     }
   };
 
   const handleVerifyOtp = async () => {
-    if (!email.trim() || !otp.trim()) {
-      toast.error("Please enter both email and OTP.");
+    if (!otp.trim()) {
+      toast.error("OTP is required");
       return;
     }
 
-    setLoading(true);
     try {
-      const res = await API.post("/signup", { email, otp });
-      const token = res.data.token;
-      if (!token) {
-        toast.error("No token received from server.");
-        return;
-      }
-
-      toast.success("Signup successful");
-      localStorage.setItem("authToken", token);
+      setLoading(true);
+      const res = await API.post("/verify-otp", { name, dob, email, otp });
+      toast.success(res.data.message || "Signup successful");
+      localStorage.setItem("authToken", res.data.token);
+      clearForm();
       navigate("/");
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Signup failed.");
+      toast.error(err.response?.data?.message || "Invalid or expired OTP");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-screen relative overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen overflow-y-auto md:overflow-hidden bg-white relative">
       <Toaster position="top-center" />
 
-      {/* Desktop top-left logo */}
-      <div className="hidden md:flex absolute top-6 left-6 items-center">
+      {/* Desktop Logo Top-Left */}
+      <div className="hidden md:flex absolute top-6 left-6 items-center z-10">
         <svg
           className="h-8 w-8 text-blue-600"
           viewBox="0 0 24 24"
@@ -87,14 +107,13 @@ const Signup: React.FC = () => {
         <span className="text-2xl font-bold text-gray-800 ml-2">HD</span>
       </div>
 
-      {/* Form Section */}
-      <div className="flex flex-col justify-start md:justify-center items-center w-full md:w-1/2 h-full p-4 pt-6 md:p-8 bg-white">
-        <div className="w-full md:max-w-md md:border md:border-gray-200 md:rounded-xl md:shadow-lg md:p-6 bg-white">
-
-          {/* Mobile-centered logo */}
-          <div className="flex items-center justify-center mb-4 md:hidden">
+      {/* Left - Signup Form */}
+      <div className="flex-1 flex items-center justify-center p-4 md:p-8">
+        <div className="w-full p-4 md:max-w-md md:border md:border-gray-200 md:rounded-xl md:shadow-lg md:p-6 bg-white">
+          {/* Mobile Logo Centered */}
+          <div className="flex flex-col items-center mb-4 md:hidden">
             <svg
-              className="h-8 w-8 text-blue-600"
+              className="h-10 w-10 text-blue-600"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -116,85 +135,138 @@ const Signup: React.FC = () => {
                 <circle cx="12" cy="12" r="4" />
               </g>
             </svg>
-            <span className="text-3xl font-bold text-gray-800 ml-3">HD</span>
+            <span className="text-3xl font-bold text-gray-800 mt-2">HD</span>
           </div>
 
-          <h2 className="text-3xl font-bold mb-2 text-center">Sign Up</h2>
+          <h2 className="text-3xl font-bold mb-2 text-center">Sign up</h2>
           <p className="text-gray-500 mb-6 text-center">
-            Please create your account.
+            Sign up to enjoy the features of HD
           </p>
 
-          <div className="w-full mt-10">
-            <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              placeholder="your@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="border border-gray-300 rounded px-4 py-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <input
+            type="text"
+            placeholder="Your Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="border border-gray-300 rounded px-4 py-2 mb-4 w-full mt-10"
+          />
 
+          <input
+            type="date"
+            value={dob}
+            onChange={(e) => setDob(e.target.value)}
+            className="border border-gray-300 rounded px-4 py-2 mb-4 w-full"
+          />
+
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="border border-blue-500 rounded px-4 py-2 mb-4 w-full"
+          />
+
+          {showOtpInput && (
+            <div className="relative mb-4">
+              <input
+                type={showOtp ? "text" : "password"}
+                placeholder="OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                className="border border-gray-300 rounded px-4 py-2 w-full"
+                autoComplete="one-time-code"
+                autoFocus
+                inputMode="numeric"
+              />
+              <button
+                type="button"
+                onClick={() => setShowOtp(!showOtp)}
+                className="absolute right-2 top-2 text-gray-500"
+              >
+                {showOtp ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
+          )}
+
+          {!showOtpInput ? (
             <button
               onClick={handleSendOtp}
               disabled={loading}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded w-full mb-4 flex justify-center items-center"
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded w-full flex justify-center items-center"
             >
-              {loading ? "Sending..." : showOtpInput ? "Resend OTP" : "Send OTP"}
-            </button>
-
-            {showOtpInput && (
-              <>
-                <label htmlFor="otp" className="block text-gray-700 text-sm font-bold mb-2">
-                  OTP
-                </label>
-                <div className="relative mb-4">
-                  <input
-                    id="otp"
-                    type={showOtp ? "text" : "password"}
-                    placeholder="Enter OTP"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    className="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    autoComplete="one-time-code"
-                    autoFocus
-                    inputMode="numeric"
+              {loading ? (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowOtp(!showOtp)}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
-                  >
-                    {showOtp ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-              </>
-            )}
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  />
+                </svg>
+              ) : (
+                "Get OTP"
+              )}
+            </button>
+          ) : (
+            <button
+              onClick={handleVerifyOtp}
+              disabled={loading}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded w-full flex justify-center items-center"
+            >
+              {loading ? (
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  />
+                </svg>
+              ) : (
+                "Sign up"
+              )}
+            </button>
+          )}
 
-            {showOtpInput && (
-              <button
-                onClick={handleVerifyOtp}
-                disabled={loading}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded w-full flex justify-center items-center"
-              >
-                {loading ? "Verifying..." : "Sign Up"}
-              </button>
-            )}
-
-            <p className="text-sm text-gray-500 mt-4 text-center">
-              Already have an account? {" "}
-              <Link to="/login" className="text-blue-600 hover:underline">
-                Login
-              </Link>
-            </p>
-          </div>
+          <p className="text-sm text-gray-500 mt-4 text-center">
+            Already have an account?{" "}
+            <Link to="/login" className="text-blue-600 hover:underline">
+              Sign in
+            </Link>
+          </p>
         </div>
       </div>
 
-      {/* Image Section (Desktop only) */}
-      <div className="hidden md:block w-1/2 h-full">
+      {/* Right - Desktop Image */}
+      <div className="hidden md:block flex-1">
         <img
           src="https://4kwallpapers.com/images/wallpapers/windows-11-dark-mode-blue-stock-official-3840x2400-5630.jpg"
           alt="Signup Visual"
