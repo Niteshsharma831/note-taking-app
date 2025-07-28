@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import API from "../services/api";
-import { toast, Toaster } from "react-hot-toast";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Mail, Key } from "lucide-react";
+import { Toaster, toast } from "react-hot-toast";
 
 const Signup: React.FC = () => {
   const [name, setName] = useState("");
@@ -12,6 +12,7 @@ const Signup: React.FC = () => {
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const navigate = useNavigate();
 
   const clearForm = () => {
@@ -22,22 +23,23 @@ const Signup: React.FC = () => {
     setShowOtpInput(false);
     setShowOtp(false);
     setLoading(false);
+    setErrors({});
   };
 
   const validateForm = () => {
-    if (!name.trim()) {
-      toast.error("Name is required");
-      return false;
+    const newErrors: { [key: string]: string } = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!name.trim()) newErrors.name = "Name is required";
+    if (!dob) newErrors.dob = "Date of Birth is required";
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!emailRegex.test(email)) {
+      newErrors.email = "Enter a valid email";
     }
-    if (!dob) {
-      toast.error("Date of Birth is required");
-      return false;
-    }
-    if (!email.trim() || !email.includes("@")) {
-      toast.error("Valid email is required");
-      return false;
-    }
-    return true;
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSendOtp = async () => {
@@ -57,7 +59,7 @@ const Signup: React.FC = () => {
 
   const handleVerifyOtp = async () => {
     if (!otp.trim()) {
-      toast.error("OTP is required");
+      setErrors({ otp: "OTP is required" });
       return;
     }
 
@@ -78,15 +80,8 @@ const Signup: React.FC = () => {
   return (
     <div className="flex flex-col md:flex-row h-screen bg-white">
       <Toaster position="top-center" />
-
-      {/* Desktop Top-Left Logo */}
       <div className="hidden md:flex absolute top-6 left-6 items-center z-10">
-        <svg
-          className="h-8 w-8 text-blue-600"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg className="h-8 w-8 text-blue-600" viewBox="0 0 24 24" fill="none">
           <g
             stroke="currentColor"
             strokeWidth="2"
@@ -107,16 +102,13 @@ const Signup: React.FC = () => {
         <span className="text-2xl font-bold text-gray-800 ml-2">HD</span>
       </div>
 
-      {/* Left - Signup Form */}
       <div className="flex-1 flex justify-center p-4 md:p-8 items-start md:items-center">
         <div className="w-full max-w-md md:border md:border-gray-200 md:rounded-xl md:shadow-lg md:p-6 bg-white">
-          {/* Mobile Centered Logo */}
           <div className="flex md:hidden justify-center items-center mb-6">
             <svg
               className="h-8 w-8 text-blue-600"
               viewBox="0 0 24 24"
               fill="none"
-              xmlns="http://www.w3.org/2000/svg"
             >
               <g
                 stroke="currentColor"
@@ -142,32 +134,62 @@ const Signup: React.FC = () => {
           <p className="text-gray-500 mb-6 text-center">
             Sign up to enjoy the features of HD
           </p>
-
+          <label
+            htmlFor="otp"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Name
+          </label>
           <input
             type="text"
             placeholder="Your Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="border border-gray-300 rounded px-4 py-2 mb-4 w-full mt-4"
+            className="border border-gray-300 rounded px-4 py-2 mb-4 w-full"
           />
-
+          {errors.name && (
+            <p className="text-sm text-red-500 mb-4">{errors.name}</p>
+          )}
+          <label
+            htmlFor="otp"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            DOB
+          </label>
           <input
             type="date"
             value={dob}
             onChange={(e) => setDob(e.target.value)}
             className="border border-gray-300 rounded px-4 py-2 mb-4 w-full"
           />
-
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="border border-blue-500 rounded px-4 py-2 mb-4 w-full"
-          />
+          {errors.dob && (
+            <p className="text-sm text-red-500 mb-4">{errors.dob}</p>
+          )}
+          <label
+            htmlFor="otp"
+            className="block text-gray-700 text-sm font-bold mb-2"
+          >
+            Email
+          </label>
+          <div className="relative mb-4">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="border border-gray-300 rounded pl-10 pr-4 py-2 w-full"
+            />
+            <Mail className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+          </div>
+          {errors.email && (
+            <p className="text-sm text-red-500 mb-4">{errors.email}</p>
+          )}
 
           {showOtpInput && (
-            <div className="text-right text-sm text-blue-600 hover:underline cursor-pointer mb-2" onClick={handleSendOtp}>
+            <div
+              className="text-right text-sm text-blue-600 hover:underline cursor-pointer mb-4"
+              onClick={handleSendOtp}
+            >
               Resend OTP
             </div>
           )}
@@ -179,15 +201,15 @@ const Signup: React.FC = () => {
                 placeholder="OTP"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                className="border border-gray-300 rounded px-4 py-2 w-full"
+                className="border border-gray-300 rounded pl-10 pr-10 py-2 w-full"
                 autoComplete="one-time-code"
-                autoFocus
                 inputMode="numeric"
               />
+              <Key className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
               <button
                 type="button"
                 onClick={() => setShowOtp(!showOtp)}
-                className="absolute right-2 top-2 text-gray-500"
+                className="absolute right-3 top-2.5 text-gray-500"
               >
                 {showOtp ? (
                   <EyeOff className="w-5 h-5" />
@@ -195,6 +217,9 @@ const Signup: React.FC = () => {
                   <Eye className="w-5 h-5" />
                 )}
               </button>
+              {errors.otp && (
+                <p className="text-sm text-red-500 mt-1">{errors.otp}</p>
+              )}
             </div>
           )}
 
@@ -202,29 +227,14 @@ const Signup: React.FC = () => {
             <button
               onClick={handleSendOtp}
               disabled={loading}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded w-full flex justify-center items-center"
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded w-full flex justify-center items-center mt-4 min-h-[40px]"
             >
               {loading ? (
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8z"
-                  />
-                </svg>
+                <div className="flex space-x-1 justify-center items-center">
+                  <div className="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                  <div className="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                  <div className="h-2 w-2 bg-white rounded-full animate-bounce"></div>
+                </div>
               ) : (
                 "Get OTP"
               )}
@@ -233,29 +243,14 @@ const Signup: React.FC = () => {
             <button
               onClick={handleVerifyOtp}
               disabled={loading}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded w-full flex justify-center items-center"
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded w-full flex justify-center items-center mt-4 min-h-[40px]"
             >
               {loading ? (
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8z"
-                  />
-                </svg>
+                <div className="flex space-x-1 justify-center items-center">
+                  <div className="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                  <div className="h-2 w-2 bg-white rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                  <div className="h-2 w-2 bg-white rounded-full animate-bounce"></div>
+                </div>
               ) : (
                 "Sign up"
               )}
@@ -271,7 +266,6 @@ const Signup: React.FC = () => {
         </div>
       </div>
 
-      {/* Right - Desktop Image */}
       <div className="hidden md:block flex-1">
         <img
           src="https://4kwallpapers.com/images/wallpapers/windows-11-dark-mode-blue-stock-official-3840x2400-5630.jpg"
